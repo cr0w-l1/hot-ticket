@@ -6,7 +6,6 @@ listener.Start();
 Console.WriteLine($"Now listening on: {listener.LocalEndpoint}");
 
 ReadOnlySpan<byte> httpHeaderTerminator = "\r\n\r\n"u8;
-ReadOnlySpan<byte> response = "hello"u8;
 byte[] buffer = new byte[256];
 while (true)
 {
@@ -21,6 +20,6 @@ while (true)
         idx = buffer.AsSpan().IndexOf(httpHeaderTerminator);
         if (idx != -1) break;
     }
-    stream.Write(response);
+    stream.Write("HTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello\r\n"u8);
 }
  
