@@ -7,12 +7,11 @@ listener.Start();
 Console.WriteLine($"Now listening on: {listener.LocalEndpoint}");
 
 ReadOnlySpan<byte> httpHeaderTerminator = "\r\n\r\n"u8;
-ReadOnlySpan<byte> body = "hello"u8;
 byte[] header = Encoding.ASCII.GetBytes(
                 "HTTP/1.1 200 OK\r\n" +
-               $"Content-Length: {body.Length}\r\n" +
+                "Content-Type: text/plain; charset=utf-8\r\n" +
+                "Transfer-Encoding: chunked\r\n" +
                 "\r\n");
-
 byte[] buffer = new byte[256];
 while (true)
 {
@@ -28,5 +27,19 @@ while (true)
         if (idx != -1) break;
     }
     stream.Write(header);
-    stream.Write(body);
+
+    for (int position = 3; position >= 1; position--)
+    {
+        WriteChunk(stream, Encoding.UTF8.GetBytes($"Vị trí của bạn trong hàng chờ: {position}\n"));
+        Thread.Sleep(1000); //simulate mỗi s response vị trí mới trong hàng chờ
+    }
+    WriteChunk(stream, Encoding.UTF8.GetBytes("Đến lượt bạn! Mời chọn vé.\n"));
+    stream.Write("0\r\n\r\n"u8);
+}
+
+static void WriteChunk(NetworkStream stream,  byte[] data)
+{
+    stream.Write(Encoding.ASCII.GetBytes($"{data.Length:X}\r\n"));
+    stream.Write(data);
+    stream.Write("\r\n"u8);
 }
