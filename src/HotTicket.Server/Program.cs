@@ -10,6 +10,7 @@ ReadOnlySpan<byte> httpHeaderTerminator = "\r\n\r\n"u8;
 ReadOnlySpan<byte> body = "hello"u8;
 byte[] header = Encoding.ASCII.GetBytes(
                 "HTTP/1.1 200 OK\r\n" +
+                "Connection: close\r\n" +
                $"Content-Length: {body.Length}\r\n" +
                 "\r\n");
 
