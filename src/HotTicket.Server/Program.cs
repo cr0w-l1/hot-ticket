@@ -6,6 +6,7 @@ listener.Start();
 Console.WriteLine($"Now listening on: {listener.LocalEndpoint}");
 
 ReadOnlySpan<byte> httpHeaderTerminator = "\r\n\r\n"u8;
+ReadOnlySpan<byte> body = "hello"u8;
 byte[] buffer = new byte[256];
 while (true)
 {
